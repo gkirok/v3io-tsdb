@@ -58,18 +58,24 @@ def build_nuclio(V3IO_TSDB_VERSION, internal_status="stable") {
         def git_project = 'tsdb-nuclio'
         stage('prepare sources') {
             container('jnlp') {
+                echo "a1"
                 dir("${BUILD_FOLDER}") {
                     sh """
                         rm -rf "src/github.com/v3io/${git_project}";
                         git clone https://${GIT_TOKEN}@github.com/${git_project_user}/${git_project}.git src/github.com/v3io/${git_project}
                     """
                 }
+                echo "a2"
                 if ( "${internal_status}" == "unstable" ) {
+                    echo "a3"
                     dir("${BUILD_FOLDER}/src/github.com/v3io/${git_project}") {
+                        echo "a4"
                         sh("git checkout development")
                     }
                 }
+                echo "a5"
                 dir("${BUILD_FOLDER}/src/github.com/v3io/${git_project}") {
+                    echo "a6"
                     sh """
                         rm -rf functions/ingest/vendor/github.com/v3io/v3io-tsdb functions/query/vendor/github.com/v3io/v3io-tsdb
                         git clone https://${GIT_TOKEN}@github.com/${git_project_user}/v3io-tsdb.git functions/ingest/vendor/github.com/v3io/v3io-tsdb
@@ -92,12 +98,12 @@ def build_nuclio(V3IO_TSDB_VERSION, internal_status="stable") {
                             git config --global user.name '${GIT_USERNAME}'
                             git add functions/ingest/vendor/github.com functions/query/vendor/github.com;
                             git commit -am 'Updated TSDB to ${V3IO_TSDB_VERSION}';
-                            if [[ "${internal_status}" == "unstable" ]]; then
-                                git push origin development
-                            else
-                                git push origin master
-                            fi
                         """
+                        if ( "${internal_status}" == "unstable" ) {
+                            sh("git push origin development")
+                        } else {
+                            sh("git push origin master")
+                        }
                     }
                 } catch (err) {
                     echo "Can not push code to master"
@@ -162,12 +168,12 @@ def build_prometheus(V3IO_TSDB_VERSION, internal_status="stable") {
                             git config --global user.name '${GIT_USERNAME}'
                             git add vendor/github.com;
                             git commit -am 'Updated TSDB to ${V3IO_TSDB_VERSION}';
-                            if [[ "${internal_status}" == "unstable" ]]; then
-                                git push origin development
-                            else
-                                git push origin master
-                            fi
                         """
+                        if ( "${internal_status}" == "unstable" ) {
+                            sh("git push origin development")
+                        } else {
+                            sh("git push origin master")
+                        }
                     }
                 } catch (err) {
                     echo "Can not push code to master"
