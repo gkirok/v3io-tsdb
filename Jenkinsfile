@@ -92,12 +92,12 @@ def build_nuclio(V3IO_TSDB_VERSION, internal_status="stable") {
                             git config --global user.name '${GIT_USERNAME}'
                             git add functions/ingest/vendor/github.com functions/query/vendor/github.com;
                             git commit -am 'Updated TSDB to ${V3IO_TSDB_VERSION}';
-                            if [[ "${internal_status}" == "unstable" ]]; then
-                                git push origin development
-                            else
-                                git push origin master
-                            fi
                         """
+                        if ( "${internal_status}" == "unstable" ) {
+                            sh("git push origin development")
+                        } else {
+                            sh("git push origin master")
+                        }
                     }
                 } catch (err) {
                     echo "Can not push code to master"
@@ -162,12 +162,12 @@ def build_prometheus(V3IO_TSDB_VERSION, internal_status="stable") {
                             git config --global user.name '${GIT_USERNAME}'
                             git add vendor/github.com;
                             git commit -am 'Updated TSDB to ${V3IO_TSDB_VERSION}';
-                            if [[ "${internal_status}" == "unstable" ]]; then
-                                git push origin development
-                            else
-                                git push origin master
-                            fi
                         """
+                        if ( "${internal_status}" == "unstable" ) {
+                            sh("git push origin development")
+                        } else {
+                            sh("git push origin master")
+                        }
                     }
                 } catch (err) {
                     echo "Can not push code to master"
